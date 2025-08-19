@@ -29,27 +29,33 @@ type AuthContextType = {
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const { toast } = useToast();
-  
   const userQuery = useQuery({
     queryKey: ["/api/auth/user"],
     queryFn: async () => {
+      console.log("Fetching user auth status...");
       try {
         const response = await fetch("/api/auth/user", {
           credentials: "include",
         });
+        console.log("Auth response status:", response.status);
         if (response.status === 401) {
-          return null;
+          console.log("User not authenticated (401)");
+          return null; // User not logged in
         }
         if (!response.ok) {
           throw new Error("Failed to fetch user");
         }
-        return await response.json();
+        const userData = await response.json();
+        console.log("User authenticated:", userData);
+        return userData;
       } catch (error) {
-        return null;
+        console.log("Auth check failed:", error);
+        return null; // Treat errors as not logged in
       }
     },
     retry: false,
+    staleTime: 0, // Always check fresh
+    gcTime: 0, // Don't cache auth state (renamed from cacheTime in v5)
   });
 
   const loginMutation = useMutation({
@@ -59,17 +65,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["/api/auth/user"], data.user);
-      toast({
-        title: "Login successful",
-        description: "Welcome to FINTRAK!",
-      });
     },
     onError: (error: Error) => {
-      toast({
-        title: "Login failed",
-        description: error.message,
-        variant: "destructive",
-      });
+      console.error("Login failed:", error.message);
     },
   });
 
@@ -80,17 +78,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     onSuccess: () => {
       queryClient.setQueryData(["/api/auth/user"], null);
       queryClient.clear();
-      toast({
-        title: "Logged out",
-        description: "You have been successfully logged out.",
-      });
     },
     onError: (error: Error) => {
-      toast({
-        title: "Logout failed",
-        description: error.message,
-        variant: "destructive",
-      });
+      console.error("Logout failed:", error.message);
     },
   });
 
@@ -103,6 +93,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isAuthenticated: !!userQuery.data,
   };
 
+  console.log("AuthProvider contextValue:", contextValue);
+
   return (
     <AuthContext.Provider value={contextValue}>
       {children}
@@ -113,7 +105,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    // Instead of throwing an error immediately, return a safe default
+    console.warn("useAuth called outside AuthProvider - returning safe defaults");
+    return {
+      user: null,
+      isLoading: false, // Changed to false so login page shows
+      error: null,
+      loginMutation: { mutate: () => {}, isPending: false },
+      logoutMutation: { mutate: () => {}, isPending: false },
+      isAuthenticated: false,
+    };
   }
   return context;
 }

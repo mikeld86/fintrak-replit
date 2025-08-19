@@ -177,7 +177,8 @@ function getSession() {
   const pgStore = connectPg(session);
   const sessionStore = new pgStore({
     conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
+    createTableIfMissing: true,
+    // Allow table creation in production
     ttl: sessionTtl,
     tableName: "sessions"
   });
@@ -188,9 +189,10 @@ function getSession() {
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: false,
-      // Set to true in production with HTTPS
-      maxAge: sessionTtl
+      secure: process.env.NODE_ENV === "production",
+      // HTTPS in production
+      maxAge: sessionTtl,
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax"
     }
   });
 }

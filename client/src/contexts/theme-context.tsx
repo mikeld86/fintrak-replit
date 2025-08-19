@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
 
 type Theme = "blue" | "pink" | "green" | "orange" | "red";
@@ -21,7 +20,6 @@ const initialState: ThemeProviderState = {
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const { user, isAuthenticated } = useAuth();
   const [theme, setThemeState] = useState<Theme>("blue");
   const [darkMode, setDarkModeState] = useState(false);
 
@@ -72,16 +70,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         body.classList.add("dark");
         html.setAttribute("data-theme", "dark");
       }
-    } else if (isAuthenticated && user) {
-      setThemeState((user as any).theme as Theme || "blue");
-      setDarkModeState((user as any).darkMode || false);
     } else {
       const savedTheme = localStorage.getItem("theme") as Theme;
       const savedDarkMode = localStorage.getItem("darkMode") === "true";
       if (savedTheme) setThemeState(savedTheme);
       setDarkModeState(savedDarkMode);
     }
-  }, [user, isAuthenticated]);
+  }, []);
 
   // Listen for system theme changes on mobile with improved detection
   useEffect(() => {
@@ -174,14 +169,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     
     setThemeState(newTheme);
     
-    if (isAuthenticated) {
-      try {
-        await apiRequest("PATCH", "/api/auth/user", { theme: newTheme });
-      } catch (error) {
-        console.error("Failed to save theme preference:", error);
-      }
-    } else {
-      localStorage.setItem("theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+    
+    try {
+      await apiRequest("PATCH", "/api/auth/user", { theme: newTheme });
+    } catch (error) {
+      console.log("Theme saved locally only:", error);
     }
   };
 
@@ -195,14 +188,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const newDarkMode = !darkMode;
     setDarkModeState(newDarkMode);
     
-    if (isAuthenticated) {
-      try {
-        await apiRequest("PATCH", "/api/auth/user", { darkMode: newDarkMode });
-      } catch (error) {
-        console.error("Failed to save dark mode preference:", error);
-      }
-    } else {
-      localStorage.setItem("darkMode", String(newDarkMode));
+    localStorage.setItem("darkMode", String(newDarkMode));
+    
+    try {
+      await apiRequest("PATCH", "/api/auth/user", { darkMode: newDarkMode });
+    } catch (error) {
+      console.log("Dark mode saved locally only:", error);
     }
   };
 

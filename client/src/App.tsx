@@ -10,44 +10,51 @@ import Home from "@/pages/home";
 import LoginPage from "@/pages/login-page";
 import NotFound from "@/pages/not-found";
 
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user, isLoading } = useAuth();
-  
-  if (isLoading) {
+function AppContent() {
+  // Add error boundary and safe context access
+  try {
+    const { user, isLoading } = useAuth();
+    
+    console.log("AppContent render - user:", user, "isLoading:", isLoading);
+    
+    if (isLoading) {
+      return (
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      );
+    }
+    
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
+      <TooltipProvider>
+        <ThemeProvider>
+          <Toaster />
+          <Switch>
+            <Route path="/" component={() => user ? <Home /> : <LoginPage />} />
+            <Route path="/login" component={LoginPage} />
+            <Route component={NotFound} />
+          </Switch>
+        </ThemeProvider>
+      </TooltipProvider>
+    );
+  } catch (error) {
+    console.error("AppContent error:", error);
+    return (
+      <TooltipProvider>
+        <ThemeProvider>
+          <Toaster />
+          <LoginPage />
+        </ThemeProvider>
+      </TooltipProvider>
     );
   }
-  
-  if (!user) {
-    return <LoginPage />;
-  }
-  
-  return <>{children}</>;
-}
-
-function AppRoutes() {
-  return (
-    <Switch>
-      <Route path="/" component={() => <ProtectedRoute><Home /></ProtectedRoute>} />
-      <Route path="/login" component={LoginPage} />
-      <Route component={NotFound} />
-    </Switch>
-  );
 }
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <TooltipProvider>
-          <ThemeProvider>
-            <Toaster />
-            <AppRoutes />
-          </ThemeProvider>
-        </TooltipProvider>
+        <AppContent />
       </AuthProvider>
     </QueryClientProvider>
   );
