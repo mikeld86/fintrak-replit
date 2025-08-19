@@ -1,0 +1,136 @@
+/* Complete Dark Mode Implementation */
+
+/* Root dark mode variables */
+html.dark,
+body.dark,
+.dark {
+  --background: #0a0a0a !important;
+  --foreground: #f0f0f0 !important;
+  --card: #1a1a1a !important;
+  --card-foreground: #f0f0f0 !important;
+  --popover: #0a0a0a !important;
+  --popover-foreground: #f0f0f0 !important;
+  --primary: #007AFF !important;
+  --primary-foreground: #ffffff !important;
+  --secondary: #2a2a2a !important;
+  --secondary-foreground: #f0f0f0 !important;
+  --muted: #2a2a2a !important;
+  --muted-foreground: #b0b0b0 !important;
+  --accent: #2a2a2a !important;
+  --accent-foreground: #f0f0f0 !important;
+  --destructive: #ff453a !important;
+  --destructive-foreground: #ffffff !important;
+  --border: #3a3a3a !important;
+  --input: #2a2a2a !important;
+  --ring: #007AFF !important;
+  background-color: #0a0a0a !important;
+  color: #f0f0f0 !important;
+}
+
+/* Universal dark styling */
+.dark *,
+.dark,
+html.dark,
+body.dark {
+  background-color: #0a0a0a !important;
+  color: #f0f0f0 !important;
+  border-color: #3a3a3a !important;
+}
+
+/* Card backgrounds */
+.dark .bg-card,
+.dark .bg-white,
+.dark .bg-gray-50,
+.dark .bg-gray-100,
+.dark .bg-gray-200,
+.dark .bg-background {
+  background-color: #1a1a1a !important;
+}
+
+/* Denomination rows - slightly lighter for contrast */
+.dark .space-y-3 > div,
+.dark .space-y-3 .bg-gray-50 {
+  background-color: #2a2a2a !important;
+}
+
+/* Input styling */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #2a2a2a !important;
+  color: #f0f0f0 !important;
+  border-color: #3a3a3a !important;
+}
+
+.dark input[readonly] {
+  background-color: #2a2a2a !important;
+  color: #f0f0f0 !important;
+}
+
+/* Text colors */
+.dark .text-gray-500,
+.dark .text-gray-600,
+.dark .text-gray-700,
+.dark .text-gray-800,
+.dark .text-gray-900,
+.dark .text-black {
+  color: #e0e0e0 !important;
+}
+
+.dark .text-gray-400 {
+  color: #b0b0b0 !important;
+}
+
+.dark .text-gray-300 {
+  color: #e0e0e0 !important;
+}
+
+.dark .text-primary {
+  color: #007AFF !important;
+}
+
+/* Buttons */
+.dark button {
+  background-color: #2a2a2a !important;
+  color: #f0f0f0 !important;
+  border-color: #3a3a3a !important;
+}
+
+.dark .bg-primary {
+  background-color: #007AFF !important;
+  color: #ffffff !important;
+}
+
+/* Headings */
+.dark h1,
+.dark h2, 
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
+  color: #f0f0f0 !important;
+}
+
+/* Borders */
+.dark .border,
+.dark .border-gray-200,
+.dark .border-gray-300,
+.dark .border-t,
+.dark .border-b {
+  border-color: #3a3a3a !important;
+}
+
+/* Root and main containers */
+.dark #root {
+  background-color: #0a0a0a !important;
+  color: #f0f0f0 !important;
+  min-height: 100vh !important;
+}
+
+.dark main {
+  background-color: #0a0a0a !important;
+}
+
+.dark .min-h-screen {
+  background-color: #0a0a0a !important;
+}
