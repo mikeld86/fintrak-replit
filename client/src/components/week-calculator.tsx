@@ -3,37 +3,43 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { CalendarX, CalendarPlus, Plus, Trash2 } from "lucide-react";
+import { CalendarX, CalendarPlus, Plus, Trash2, X } from "lucide-react";
 import { FinancialRow } from "@shared/schema";
 import { BankAccounts } from "./bank-accounts";
 import { QuickAddShortcuts } from "./quick-add-shortcuts";
 import { formatCurrency } from "@/lib/utils";
 
 type WeekCalculatorProps = {
-  weekNumber: 1 | 2;
+  weekNumber: number;
+  weekName?: string;
   cashOnHand?: number;
   bankBalance?: number;
   startingBalance?: number;
   bankAccountRows?: FinancialRow[];
   incomeRows: FinancialRow[];
   expenseRows: FinancialRow[];
+  canRemove?: boolean;
   onUpdate: (data: {
     incomeRows: FinancialRow[];
     expenseRows: FinancialRow[];
     bankAccountRows?: FinancialRow[];
     balance: number;
   }) => void;
+  onRemove?: () => void;
 };
 
 export function WeekCalculator({ 
   weekNumber, 
+  weekName,
   cashOnHand = 0,
   bankBalance = 0,
   startingBalance = 0,
   bankAccountRows: initialBankAccountRows = [],
   incomeRows: initialIncomeRows,
   expenseRows: initialExpenseRows,
-  onUpdate 
+  canRemove = false,
+  onUpdate,
+  onRemove
 }: WeekCalculatorProps) {
   const [incomeRows, setIncomeRows] = useState<FinancialRow[]>(initialIncomeRows);
   const [expenseRows, setExpenseRows] = useState<FinancialRow[]>(initialExpenseRows);
@@ -73,6 +79,9 @@ export function WeekCalculator({
     if (weekNumber === 1) {
       updateData.bankAccountRows = bankAccounts;
     }
+    
+
+    
     onUpdate(updateData);
   };
 
@@ -161,26 +170,38 @@ export function WeekCalculator({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center">
-          {weekNumber === 1 ? (
-            <CalendarX className="mr-3 h-5 w-5 text-primary" />
-          ) : (
-            <CalendarPlus className="mr-3 h-5 w-5 text-primary" />
+        <CardTitle className="flex items-center justify-between">
+          <div className="flex items-center">
+            {weekNumber === 1 ? (
+              <CalendarX className="mr-3 h-5 w-5 text-primary" />
+            ) : (
+              <CalendarPlus className="mr-3 h-5 w-5 text-primary" />
+            )}
+            {weekName || (weekNumber === 1 ? "Current Week" : weekNumber === 2 ? "Next Week" : `Week ${weekNumber}`)}
+          </div>
+          {canRemove && onRemove && (
+            <Button
+              variant="ghost" 
+              size="sm"
+              onClick={onRemove}
+              className="text-destructive hover:text-destructive/80 hover:bg-destructive/10"
+            >
+              <X className="h-4 w-4" />
+            </Button>
           )}
-          {weekNumber === 1 ? "Current Week" : "Next Week"}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Cash on Hand / Starting Balance */}
         <div>
           <Label className="text-sm font-medium text-muted-foreground">
-            {weekNumber === 1 ? "Cash on Hand" : "Starting Balance (from Week 1)"}
+            {weekNumber === 1 ? "Cash on Hand" : `Starting Balance (from Week ${weekNumber - 1})`}
           </Label>
           <div className="relative mt-2">
             <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">$</span>
             <Input
-              type="number"
-              value={weekNumber === 1 ? formatCurrency(cashOnHand).replace('$', '') : formatCurrency(startingBalance).replace('$', '')}
+              type="text"
+              value={weekNumber === 1 ? cashOnHand.toFixed(2) : startingBalance.toFixed(2)}
               readOnly
               className="pl-8 text-lg font-medium text-right bg-input text-foreground border-border"
               step="0.01"

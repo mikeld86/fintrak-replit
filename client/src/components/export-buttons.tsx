@@ -38,12 +38,12 @@ export function ExportButtons({ data }: ExportButtonsProps) {
           <span className="hidden sm:inline">Export</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={handleExcelExport}>
+      <DropdownMenuContent align="end" className="bg-background border border-border shadow-lg">
+        <DropdownMenuItem onClick={handleExcelExport} className="text-foreground hover:bg-accent hover:text-accent-foreground">
           <FileSpreadsheet className="h-4 w-4 mr-2 text-green-600" />
           Export to Excel (.xlsx)
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handlePDFExport}>
+        <DropdownMenuItem onClick={handlePDFExport} className="text-foreground hover:bg-accent hover:text-accent-foreground">
           <FileText className="h-4 w-4 mr-2 text-red-600" />
           Export to PDF (.pdf)
         </DropdownMenuItem>

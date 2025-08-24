@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark navy background matching your original FINTRAK icon -->
+  <rect width="1024" height="1024" rx="160" fill="#334155"/>
+  
+  <!-- FINTRAK "fi" logo - recreated from your exact design -->
+  
+  <!-- F - Top horizontal bar -->
+  <rect x="380" y="183" width="265" height="130" rx="24" fill="#3B82F6"/>
+  
+  <!-- F - Left vertical bar -->
+  <rect x="247" y="314" width="133" height="133" rx="24" fill="#3B82F6"/>
+  
+  <!-- F - Middle horizontal bar (smaller) -->
+  <rect x="380" y="447" width="135" height="95" rx="20" fill="#1E90FF"/>
+  
+  <!-- I - Top right block -->
+  <rect x="643" y="447" width="133" height="133" rx="24" fill="#00CED1"/>
+  
+  <!-- I - Left bottom vertical -->
+  <rect x="247" y="580" width="133" height="261" rx="24" fill="#1E90FF"/>
+  
+  <!-- I - Middle bottom block -->
+  <rect x="380" y="609" width="133" height="161" rx="24" fill="#00BFFF"/>
+  
+  <!-- I - Right bottom vertical -->
+  <rect x="513" y="580" width="133" height="261" rx="24" fill="#20B2AA"/>
+  
+  <!-- I - Bottom right tall block -->
+  <rect x="643" y="609" width="133" height="232" rx="24" fill="#00CED1"/>
+</svg>
