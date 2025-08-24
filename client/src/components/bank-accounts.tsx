@@ -17,7 +17,28 @@ export function BankAccounts({ bankAccountRows: initialBankAccountRows, onUpdate
   const [bankAccountRows, setBankAccountRows] = useState<FinancialRow[]>(initialBankAccountRows);
 
   useEffect(() => {
-    setBankAccountRows(initialBankAccountRows);
+    // Ensure default bank accounts exist
+    let updatedRows = [...initialBankAccountRows];
+    
+    // Check if default accounts exist, if not add them
+    const defaultAccounts = [
+      { id: "amp-default", label: "AMP", amount: 0 },
+      { id: "anz-default", label: "ANZ", amount: 0 }
+    ];
+    
+    defaultAccounts.forEach(defaultAccount => {
+      const exists = updatedRows.some(row => row.label === defaultAccount.label);
+      if (!exists) {
+        updatedRows.push(defaultAccount);
+      }
+    });
+    
+    setBankAccountRows(updatedRows);
+    
+    // If we added new accounts, trigger an update
+    if (updatedRows.length > initialBankAccountRows.length) {
+      updateCalculations(updatedRows);
+    }
   }, [initialBankAccountRows]);
 
   const generateId = () => Math.random().toString(36).substr(2, 9);
